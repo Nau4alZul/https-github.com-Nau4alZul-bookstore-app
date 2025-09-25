@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bookstore</title>
+    <script>
+        async function loadBooks() {
+            let response = await fetch('/api/books');
+            let books = await response.json();
+            let list = document.getElementById('bookList');
+            list.innerHTML = '';
+            books.forEach(b => {
+                let item = document.createElement('li');
+                item.textContent = b.title + ' by ' + b.author + ' - RM' + b.price;
+                list.appendChild(item);
+            });
+        }
+
+        async function addBook() {
+            let title = document.getElementById('title').value;
+            let author = document.getElementById('author').value;
+            let price = document.getElementById('price').value;
+
+            await fetch('/api/books', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({title, author, price})
+            });
+            loadBooks();
+        }
+
+        window.onload = loadBooks;
+    </script>
+</head>
+<body>
+    <h2>Bookstore</h2>
+    <ul id="bookList"></ul>
+
+    <h3>Add Book</h3>
+    <input type="text" id="title" placeholder="Title" />
+    <input type="text" id="author" placeholder="Author" />
+    <input type="number" id="price" placeholder="Price" />
+    <button onclick="addBook()">Add Book</button>
+</body>
+</html>
